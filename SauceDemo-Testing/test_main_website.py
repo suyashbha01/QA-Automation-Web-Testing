@@ -456,6 +456,7 @@ def test_checkout_empty_fields(logged_in_driver):
     )
     print("PASS: Checkout information page opened.")
 
+    # Locate Continue button
     check_button = wait.until(
         EC.element_to_be_clickable(
             (By.CSS_SELECTOR, '[data-test="continue"]')
@@ -465,83 +466,153 @@ def test_checkout_empty_fields(logged_in_driver):
     # Test 1: All fields are empty
     check_button.click()
 
-    error_message = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '[data-test="error"]')
+    wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, '[data-test="error"]'),
+            "Error: First Name is required"
         )
+    )
+
+    error_message = driver.find_element(
+        By.CSS_SELECTOR, '[data-test="error"]'
     )
     assert error_message.text == "Error: First Name is required"
     print("PASS: First Name is required.")
 
+    driver.find_element(
+        By.CSS_SELECTOR, '[data-test="error-button"]'
+    ).click()
+
     # Test 2: First Name is filled, but Last Name is empty
-    Frist_name = wait.until(
-        EC.visibility_of_element_located(
+    first_name = wait.until(
+        EC.element_to_be_clickable(
             (By.CSS_SELECTOR, '[data-test="firstName"]')
         )
     )
-    Frist_name.send_keys("Suyash")
-    print("First Name entered:", Frist_name.get_attribute("value"))
+    first_name.clear()
+    first_name.send_keys("Suyash")
 
+    wait.until(
+        lambda d: d.find_element(
+            By.CSS_SELECTOR, '[data-test="firstName"]'
+        ).get_attribute("value") == "Suyash"
+    )
+    print("First Name entered:", first_name.get_attribute("value"))
+
+    check_button = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, '[data-test="continue"]')
+        )
+    )
     check_button.click()
 
-    error_message = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '[data-test="error"]')
+    wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, '[data-test="error"]'),
+            "Error: Last Name is required"
         )
+    )
+
+    error_message = driver.find_element(
+        By.CSS_SELECTOR, '[data-test="error"]'
     )
     assert error_message.text == "Error: Last Name is required"
     print("PASS: Last Name is required.")
 
+    driver.find_element(
+        By.CSS_SELECTOR, '[data-test="error-button"]'
+    ).click()
+
     # Test 3: First Name and Last Name are filled, but Postal Code is empty
-    Last_name = wait.until(
-        EC.visibility_of_element_located(
+    last_name = wait.until(
+        EC.element_to_be_clickable(
             (By.CSS_SELECTOR, '[data-test="lastName"]')
         )
     )
-    Last_name.send_keys("Bhargava")
+    last_name.clear()
+    last_name.send_keys("Bhargava")
 
-    print("First Name:", Frist_name.get_attribute("value"))
-    print("Last Name:", Last_name.get_attribute("value"))
+    wait.until(
+        lambda d: d.find_element(
+            By.CSS_SELECTOR, '[data-test="lastName"]'
+        ).get_attribute("value") == "Bhargava"
+    )
+    print("Last Name entered:", last_name.get_attribute("value"))
 
+    check_button = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, '[data-test="continue"]')
+        )
+    )
     check_button.click()
 
-    error_message = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '[data-test="error"]')
+    wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, '[data-test="error"]'),
+            "Error: Postal Code is required"
         )
+    )
+
+    error_message = driver.find_element(
+        By.CSS_SELECTOR, '[data-test="error"]'
     )
     assert error_message.text == "Error: Postal Code is required"
     print("PASS: Postal Code is required.")
 
+    driver.find_element(
+        By.CSS_SELECTOR, '[data-test="error-button"]'
+    ).click()
+
     # Enter Postal Code
-    Postal_code = wait.until(
-        EC.visibility_of_element_located(
+    postal_code = wait.until(
+        EC.element_to_be_clickable(
             (By.CSS_SELECTOR, '[data-test="postalCode"]')
         )
     )
-    Postal_code.send_keys("201005")
-    print("Postal Code entered:", Postal_code.get_attribute("value"))
+    postal_code.clear()
+    postal_code.send_keys("201005")
 
-    check_button.click()
+    wait.until(
+        lambda d: d.find_element(
+            By.CSS_SELECTOR, '[data-test="postalCode"]'
+        ).get_attribute("value") == "201005"
+    )
+    print("Postal Code entered:", postal_code.get_attribute("value"))
 
-    # Verify Checkout Overview page
-    click_continue_button = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '[data-test="title"]')
+    # Continue to Checkout Overview
+    check_button = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, '[data-test="continue"]')
         )
     )
-    assert click_continue_button.text == "Checkout: Overview"
+    check_button.click()
+
+    wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, '[data-test="title"]'),
+            "Checkout: Overview"
+        )
+    )
+
+    overview_title = driver.find_element(
+        By.CSS_SELECTOR, '[data-test="title"]'
+    )
+    assert overview_title.text == "Checkout: Overview"
     print("PASS: Redirected to Checkout Overview.")
 
-    check_overview_ProductName = wait.until(
+    # Verify product names
+    overview_products = wait.until(
         EC.visibility_of_all_elements_located(
             (By.CSS_SELECTOR, '[data-test="inventory-item-name"]')
         )
     )
 
-    assert check_overview_ProductName[0].text == "Sauce Labs Backpack"
-    assert check_overview_ProductName[1].text == "Sauce Labs Bike Light"
-    assert len(check_overview_ProductName) == 2
+    product_names = [product.text for product in overview_products]
+
+    assert "Sauce Labs Backpack" in product_names
+    assert "Sauce Labs Bike Light" in product_names
+    assert len(overview_products) == 2
+    print("PASS: Both products are displayed.")
 
     # Verify product prices
     price_check = wait.until(
@@ -549,18 +620,19 @@ def test_checkout_empty_fields(logged_in_driver):
             (By.CSS_SELECTOR, '[data-test="inventory-item-price"]')
         )
     )
+
     assert price_check[0].text == "$29.99"
     assert price_check[1].text == "$9.99"
     print("PASS: Both product prices are correct.")
 
     # Verify item subtotal
-    check_iteamTotal = wait.until(
+    item_total = wait.until(
         EC.visibility_of_element_located(
             (By.CSS_SELECTOR, '[data-test="subtotal-label"]')
         )
     )
-    assert check_iteamTotal.text == "Item total: $39.98"
-    print("Item Total:", check_iteamTotal.text)
+    assert item_total.text == "Item total: $39.98"
+    print("Item Total:", item_total.text)
 
     # Verify tax
     verify_tax = wait.until(
@@ -572,13 +644,13 @@ def test_checkout_empty_fields(logged_in_driver):
     print("Tax:", verify_tax.text)
 
     # Verify final total
-    Final_total = wait.until(
+    final_total = wait.until(
         EC.visibility_of_element_located(
             (By.CSS_SELECTOR, '[data-test="total-label"]')
         )
     )
-    assert Final_total.text == "Total: $43.18"
-    print("Final Total:", Final_total.text)
+    assert final_total.text == "Total: $43.18"
+    print("Final Total:", final_total.text)
 
 
 #=================================================================#
@@ -732,7 +804,3 @@ def test_final_page(logged_in_driver):
 
 
     
-
-
-
-
