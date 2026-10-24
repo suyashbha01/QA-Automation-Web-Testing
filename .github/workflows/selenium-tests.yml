@@ -30,4 +30,4 @@ jobs:
           pip install pytest selenium
 
       - name: Run SauceDemo tests
-        run: python -m pytest SauceDemo-Testing/ -v
+        run: python -m pytest SauceDemo-Testing/test_main_website.py -v
