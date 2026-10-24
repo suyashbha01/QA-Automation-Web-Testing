@@ -1,0 +1,15 @@
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+screenshots/
+**/screenshots/
+report.html
+**/report.html
+selenium_test_report.html
+**/selenium_test_report.html
+.env
+
