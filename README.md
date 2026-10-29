@@ -1,3 +1,4 @@
+
 # QA Automation Testing Projects
 
 A collection of web automation testing projects using **Python, Selenium WebDriver, and Pytest**. This repository demonstrates my practice with browser automation, login testing, test execution, and test organization.
