@@ -1,4 +1,3 @@
-
 # QA Automation Testing Projects
 
 A collection of web automation testing projects using **Python, Selenium WebDriver, and Pytest**. This repository demonstrates my practice with browser automation, login testing, test execution, and test organization.
@@ -7,31 +6,39 @@ A collection of web automation testing projects using **Python, Selenium WebDriv
 
 ### 1. SauceDemo Testing
 
-Website: https://www.saucedemo.com/
+**Website:** [SauceDemo](https://www.saucedemo.com/)
 
-Folder: `SauceDemo-Testing/`
+**Folder:** `SauceDemo-Testing/`
 
 This project contains automated tests for the SauceDemo demo e-commerce website.
 
 **Files:**
-- `conftest2.py` — Shared Pytest fixtures for the SauceDemo tests.
-- `test_login.py` — Login test cases.
-- `test_main_website.py` — Website testing scenarios.
+
+- `conftest.py` — Shared Pytest fixtures for the SauceDemo tests.
+- `test_main_website.py` — Website testing scenarios, including product sorting, cart operations, checkout, and sidebar functionality.
 - `test_saucedemo_login.py` — SauceDemo login automation tests.
+- `pytest.ini` — Pytest markers and configuration.
+
+The main SauceDemo test file has been run locally with **14 passing tests**.
 
 ### 2. The Internet Website Testing
 
-Website: https://the-internet.herokuapp.com/login
+**Website:** [The Internet — Login Page](https://the-internet.herokuapp.com/login)
 
-Folder: `the-internet.herokuapp Web Testing/`
+**Folder:** `the-internet.herokuapp Web Testing/`
 
 This project contains practice scripts for browser automation and web testing.
 
 **Files include:**
+
 - `conftest.py` — WebDriver fixture and failure screenshot handling.
-- `website_automation_testing.py` — Website automation practice.
-- `website_testing_practice.py` — Website testing practice scenarios.
+- `test_login.py` — Login test case.
+- `Dropdown Page.py` — Dropdown interaction practice.
+- `Website_Automaction_Testing_Pratice.py` — Website automation practice.
+- `Website_Testing_Main.py` — Website testing scenarios.
 - `Run_All_Selenium_Tests.bat` — Windows batch file for running the configured tests.
+
+Some practice scripts may need to be run individually if their filenames do not follow Pytest's test-discovery conventions.
 
 ## Technologies Used
 
@@ -41,23 +48,30 @@ This project contains practice scripts for browser automation and web testing.
 - HTML test reporting with `pytest-html`
 - Git and GitHub
 - Visual Studio Code
+- Google Chrome
 
 ## Prerequisites
 
 Install Python and Google Chrome, then install the required Python packages:
 
 ```bash
-pip install selenium pytest pytest-html
+python -m pip install selenium pytest pytest-html
 ```
 
 ## Running the Tests
 
-Open a terminal in the project root.
+Open a terminal in the repository root.
 
-To run the SauceDemo tests:
+To run the SauceDemo main test file:
 
 ```bash
-python -m pytest SauceDemo-Testing/ -v
+python -m pytest "SauceDemo-Testing/test_main_website.py" -v
+```
+
+To run all tests discovered in the SauceDemo folder:
+
+```bash
+python -m pytest "SauceDemo-Testing/" -v
 ```
 
 To run The Internet website tests:
@@ -66,11 +80,17 @@ To run The Internet website tests:
 python -m pytest "the-internet.herokuapp Web Testing/" -v
 ```
 
-**Note:** Test filenames must follow Pytest's discovery conventions, such as `test_*.py`. Files used as practice scripts may need to be run individually or renamed to match these conventions. Test execution also depends on the fixtures and imports used by each test.
+**Note:** Test filenames should follow Pytest's discovery conventions, such as `test_*.py`, and test functions should start with `test_`. Practice scripts may need to be run individually or renamed to match these conventions.
 
 ## Test Reports and Screenshots
 
-The project includes configuration for capturing screenshots when tests fail and generating HTML reports where configured. Generated reports and screenshots are excluded from Git using `.gitignore`.
+Generate a self-contained HTML report for the SauceDemo main test file:
+
+```bash
+python -m pytest "SauceDemo-Testing/test_main_website.py" -v --html=reports/saucedemo-report.html --self-contained-html
+```
+
+Create the `reports` folder first if it does not exist. Generated reports and screenshots should generally be excluded from Git using `.gitignore`, unless you intentionally want to publish them.
 
 ## Learning Goals
 
@@ -84,7 +104,7 @@ The project includes configuration for capturing screenshots when tests fail and
 
 **Suyash Bhargava**
 
-GitHub: https://github.com/suyashbha01
+GitHub: [suyashbha01](https://github.com/suyashbha01)
 
 ---
 
