@@ -1,5 +1,5 @@
 
-from selenium import webdriver 
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -21,6 +21,9 @@ def open_login_page():
         EC.element_to_be_clickable((By.ID, "login-button"))
     )
 
+    username.clear()
+    password.clear()
+
     return username, password, login_button
 
 
@@ -28,10 +31,9 @@ try:
     # 1. Verify login page elements
     username, password, login_button = open_login_page()
 
-
-    assert username.is_displayed()
-    assert password.is_displayed()
-    assert login_button.is_displayed()
+    assert username.is_displayed(), "Username field is not visible"
+    assert password.is_displayed(), "Password field is not visible"
+    assert login_button.is_displayed(), "Login button is not visible"
 
     print("PASS: Login page elements are visible.")
 

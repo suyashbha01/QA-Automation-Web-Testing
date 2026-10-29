@@ -44,7 +44,14 @@ def logged_in_driver():
         password.send_keys("secret_sauce")
         login_button.click()
 
+        # Verify successful login
         wait.until(EC.url_contains("inventory.html"))
+
+        wait.until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, ".inventory_item")
+            )
+        )
 
         yield driver
 

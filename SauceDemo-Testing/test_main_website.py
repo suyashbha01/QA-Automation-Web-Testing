@@ -128,6 +128,7 @@ def test_products_page(logged_in_driver):
     prices = [price.text for price in product_price]
 
     print("product prices:", prices)
+    
 #================================================================================#
 #Add to cart with condictons
 
@@ -440,6 +441,7 @@ def test_checkout_empty_fields(logged_in_driver):
 
 #=================================================================#
 
+
 @pytest.mark.testcase8
 def test_final_page(logged_in_driver):
     driver = logged_in_driver
@@ -500,43 +502,321 @@ def test_final_page(logged_in_driver):
         )
     ).click()
 
-    # Verify overview page
-    title = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '[data-test="title"]')
+    wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, '[data-test="title"]'),
+            "Checkout: Overview"
         )
+    )
+
+    title = driver.find_element(
+        By.CSS_SELECTOR, '[data-test="title"]'
     )
     assert title.text == "Checkout: Overview"
 
-    
     # Finish checkout
-    finish_button = wait.until(
+    wait.until(
         EC.element_to_be_clickable(
             (By.CSS_SELECTOR, '[data-test="finish"]')
         )
-    )
-    finish_button.click()
+    ).click()
 
     # Verify successful checkout
-    complete_title = wait.until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, '[data-test="title"]')
+    wait.until(
+        EC.text_to_be_present_in_element(
+            (By.CSS_SELECTOR, '[data-test="title"]'),
+            "Checkout: Complete!"
         )
     )
 
+    complete_title = driver.find_element(
+        By.CSS_SELECTOR, '[data-test="title"]'
+    )
     assert complete_title.text == "Checkout: Complete!"
 
     print("PASS: Checkout completed successfully.")
 
 
-    
+#================================================================#
+
+
+@pytest.mark.testcase9
+def test_slidebar_menu(logged_in_driver):
+    driver = logged_in_driver
+    wait = WebDriverWait(driver, 15)
+
+    # Open sidebar
+    slide_menu_button = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "#react-burger-menu-btn")
+        )
+    )
+    slide_menu_button.click()
+
+    # Verify sidebar is visible
+    slide_menu = wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, ".bm-menu")
+        )
+    )
+    assert slide_menu.is_displayed(), "Sidebar menu did not open"
+
+    # Verify All Items
+    all_items = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "inventory_sidebar_link")
+        )
+    )
+    assert all_items.text == "All Items"
+
+    # Verify Dynamic Catalog
+    dynamic_catalog = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "dynamic_catalog_sidebar_link")
+        )
+    )
+    assert "Dynamic Catalog" in dynamic_catalog.text
+
+    # Open Dynamic Catalog if submenu is not visible
+    lazy_load_xpath = "//*[normalize-space()='Lazy Load']"
+
+    lazy_load_elements = driver.find_elements(
+        By.XPATH, lazy_load_xpath
+    )
+
+    if not any(element.is_displayed() for element in lazy_load_elements):
+        dynamic_catalog.click()
+
+    # Verify all three submenu links are visible and clickable
+    submenu_links = ["Lazy Load", "Spinner", "Slider"]
+
+    for link_name in submenu_links:
+        link = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, f"//*[normalize-space()='{link_name}']")
+            )
+        )
+
+        assert link.is_displayed(), (
+            f"{link_name} is not visible"
+        )
+        assert link.is_enabled(), (
+            f"{link_name} is not enabled"
+        )
+
+        print(f"PASS: {link_name} is visible and clickable")
+
+    # Verify About
+    about = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "about_sidebar_link")
+        )
+    )
+    assert about.is_displayed()
+
+    # Verify Logout
+    logout = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "logout_sidebar_link")
+        )
+    )
+    assert logout.is_displayed()
+
+    # Verify Reset App State
+    reset = wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "reset_sidebar_link")
+        )
+    )
+    assert reset.is_displayed()
+
+    print("PASS: Sidebar and all eight menu options verified.")
+
+#======================================================================#
+
+@pytest.mark.testcase10
+def test_cross_X_button(logged_in_driver):
+    driver = logged_in_driver
+    wait = WebDriverWait(driver, 10)
+
+    # Open sidebar
+    slide_menu_button = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "#react-burger-menu-btn")
+        )
+    )
+    slide_menu_button.click()
+
+    # Close sidebar using X button
+    close_button = wait.until(
+        EC.element_to_be_clickable(
+            (By.ID, "react-burger-cross-btn")
+        )
+    )
+    close_button.click()
+
+    # Verify sidebar is closed
+    wait.until(
+        EC.invisibility_of_element_located(
+            (By.CSS_SELECTOR, ".bm-menu")
+        )
+    )
+
+    print("PASS: Sidebar closed successfully.")
+
+#=======================================================================#
+
+@pytest.mark.testcase11
+def test_alliteam(logged_in_driver):
+    driver = logged_in_driver
+    wait = WebDriverWait(driver, 10)
+
+    # Open sidebar
+    wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "#react-burger-menu-btn")
+        )
+    ).click()
+
+    # Click All Items
+    all_Iteams = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "[data-test='inventory-sidebar-link']")
+        )
+    )
+    assert all_Iteams.is_displayed(), "All Items is not visible"
+    all_Iteams.click()
+
+    # Verify inventory page
+    wait.until(EC.url_contains("inventory.html"))
+
+    assert "inventory.html" in driver.current_url, \
+        "All Items did not navigate to inventory page"
+
+    products = wait.until(
+        EC.visibility_of_all_elements_located(
+            (By.CSS_SELECTOR, ".inventory_item")
+        )
+    )
+    assert len(products) > 0, "No products are displayed"
+
+#==========================================================================#
+
+@pytest.mark.testcase12
+def test_aboutus(logged_in_driver):
+    driver = logged_in_driver
+    wait = WebDriverWait(driver, 10)
+
+    # Open sidebar
+    wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "#react-burger-menu-btn")
+        )
+    ).click()
+
+    verify_about = wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, "[data-test='about-sidebar-link']")
+        )
+    )
+
+    assert verify_about.is_displayed(), "About link is not visible"
+
+    about_url = verify_about.get_attribute("href")
+
+    assert about_url and "saucelabs.com" in about_url, \
+        "About link does not point to Sauce Labs"
+
+    print("PASS: About link points to Sauce Labs.")
+
+#=====================================================================#
+
+@pytest.mark.testcase13
+def test_Reset_App_State(logged_in_driver):
+    driver = logged_in_driver
+    wait = WebDriverWait(driver, 10)
+
+    # Add product to cart
+    wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, '[data-test="add-to-cart-sauce-labs-backpack"]')
+        )
+    ).click()
+
+    # Verify cart badge
+    wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, "[data-test='shopping-cart-badge']")
+        )
+    )
+
+    # Open sidebar
+    wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "#react-burger-menu-btn")
+        )
+    ).click()
+
+    Reset_App_State = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "[data-test='reset-sidebar-link']")
+        )
+    )
+    Reset_App_State.click()
+
+    # Verify cart badge is removed
+    wait.until(
+        EC.invisibility_of_element_located(
+            (By.CSS_SELECTOR, "[data-test='shopping-cart-badge']")
+        )
+    )
+
+    assert "inventory.html" in driver.current_url, \
+        "Reset App State did not keep the inventory page open"
+
+    print("PASS: App state was reset.")
+
+#========================================================================#
+
+@pytest.mark.testcase14
+def test_logout(logged_in_driver):
+    driver = logged_in_driver
+    wait = WebDriverWait(driver, 15)
+
+    # Open sidebar
+    wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "#react-burger-menu-btn")
+        )
+    ).click()
+
+    logout = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "[data-test='logout-sidebar-link']")
+        )
+    )
+
+    assert logout.is_displayed(), "Logout is not visible"
+    logout.click()
+
+    # Verify login page
+    wait.until(
+        EC.visibility_of_element_located(
+            (By.ID, "user-name")
+        )
+    )
+
+    assert driver.find_element(
+        By.ID, "user-name"
+    ).is_displayed(), "Logout did not return to the login page"
+
+    assert driver.find_element(
+        By.ID, "login-button"
+    ).is_displayed(), "Login button is not visible after logout"
+
+    print("PASS: Logout completed successfully.")
 
 
 
 
 
-
-
-
-
-    
