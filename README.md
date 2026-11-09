@@ -1,111 +1,150 @@
 # QA Automation Testing Projects
 
-A collection of web automation testing projects using **Python, Selenium WebDriver, and Pytest**. This repository demonstrates my practice with browser automation, login testing, test execution, and test organization.
+A collection of web automation testing projects built using **Python, Selenium WebDriver, and Pytest**. This repository showcases my hands-on practice with web UI automation, test case execution, reusable fixtures, failure screenshots, HTML reports, and CI/CD using GitHub Actions.
 
 ## Projects
 
-### 1. SauceDemo Testing
+### 1. SauceDemo Web Testing
 
-**Website:** [SauceDemo](https://www.saucedemo.com/)
+**Website:** [SauceDemo](https://www.saucedemo.com/)  
+**Project Folder:** `SauceDemo-Testing/`
 
-**Folder:** `SauceDemo-Testing/`
+Automated testing of the SauceDemo demo e-commerce website.
 
-This project contains automated tests for the SauceDemo demo e-commerce website.
+**Test Coverage**
+- Login functionality
+- Product inventory validation
+- Product sorting
+- Cart operations
+- Checkout functionality
+- Sidebar navigation
 
-**Files:**
+**Project Files**
+- `conftest.py` — Shared Pytest fixtures, browser setup, and failure screenshot handling.
+- `test_main_website.py` — Main website automation scenarios.
+- `test_saucedemo_login.py` — Login automation tests.
+- `pytest.ini` — Pytest configuration and markers.
 
-- `conftest.py` — Shared Pytest fixtures for the SauceDemo tests.
-- `test_main_website.py` — Website testing scenarios, including product sorting, cart operations, checkout, and sidebar functionality.
-- `test_saucedemo_login.py` — SauceDemo login automation tests.
-- `pytest.ini` — Pytest markers and configuration.
+**Latest Local Test Result — Main Test File**
 
-The main SauceDemo test file has been run locally with **14 passing tests**.
+| Metric | Result |
+|---|---:|
+| Total Tests | 14 |
+| Passed | 14 |
+| Failed | 0 |
+| Execution Time | Approximately 1 minute 12 seconds |
 
 ### 2. The Internet Website Testing
 
-**Website:** [The Internet — Login Page](https://the-internet.herokuapp.com/login)
+**Website:** [The Internet — Login Page](https://the-internet.herokuapp.com/login)  
+**Project Folder:** `the-internet.herokuapp Web Testing/`
 
-**Folder:** `the-internet.herokuapp Web Testing/`
+A collection of practice scripts for browser automation and web testing.
 
-This project contains practice scripts for browser automation and web testing.
-
-**Files include:**
-
+**Project Files**
 - `conftest.py` — WebDriver fixture and failure screenshot handling.
 - `test_login.py` — Login test case.
 - `Dropdown Page.py` — Dropdown interaction practice.
 - `Website_Automaction_Testing_Pratice.py` — Website automation practice.
 - `Website_Testing_Main.py` — Website testing scenarios.
-- `Run_All_Selenium_Tests.bat` — Windows batch file for running the configured tests.
+- `Run_All_Selenium_Tests.bat` — Windows batch file for running configured tests.
 
-Some practice scripts may need to be run individually if their filenames do not follow Pytest's test-discovery conventions.
+Some practice scripts may need to be run individually if they do not follow Pytest's test-discovery conventions.
 
-## Technologies Used
+## Technologies & Tools
 
+- **Language:** Python
+- **Automation:** Selenium WebDriver
+- **Test Framework:** Pytest
+- **Reporting:** pytest-html
+- **CI/CD:** GitHub Actions
+- **Version Control:** Git and GitHub
+- **IDE:** Visual Studio Code
+- **Browser:** Google Chrome
+
+## Getting Started
+
+### Prerequisites
+
+Install:
 - Python
-- Selenium WebDriver
-- Pytest
-- HTML test reporting with `pytest-html`
-- Git and GitHub
-- Visual Studio Code
 - Google Chrome
+- Git
+- Visual Studio Code
 
-## Prerequisites
+### Install Dependencies
 
-Install Python and Google Chrome, then install the required Python packages:
+Open the terminal in the repository root and run:
 
 ```bash
 python -m pip install selenium pytest pytest-html
 ```
 
-## Running the Tests
+## Running Tests
 
-Open a terminal in the repository root.
-
-To run the SauceDemo main test file:
+### Run SauceDemo Main Test File
 
 ```bash
 python -m pytest "SauceDemo-Testing/test_main_website.py" -v
 ```
 
-To run all tests discovered in the SauceDemo folder:
+### Run All Tests Discovered in SauceDemo Folder
 
 ```bash
 python -m pytest "SauceDemo-Testing/" -v
 ```
 
-To run The Internet website tests:
+### Run The Internet Website Tests
 
 ```bash
 python -m pytest "the-internet.herokuapp Web Testing/" -v
 ```
 
-**Note:** Test filenames should follow Pytest's discovery conventions, such as `test_*.py`, and test functions should start with `test_`. Practice scripts may need to be run individually or renamed to match these conventions.
+**Note:** Pytest discovers test files using names such as `test_*.py` and test functions starting with `test_`. Practice scripts that do not follow these conventions may need to be run individually.
 
-## Test Reports and Screenshots
+## HTML Test Reports & Screenshots
 
-Generate a self-contained HTML report for the SauceDemo main test file:
+Generate a self-contained HTML report:
 
 ```bash
 python -m pytest "SauceDemo-Testing/test_main_website.py" -v --html=reports/saucedemo-report.html --self-contained-html
 ```
 
-Create the `reports` folder first if it does not exist. Generated reports and screenshots should generally be excluded from Git using `.gitignore`, unless you intentionally want to publish them.
+Create the `reports` folder first if it does not exist.
 
-## Learning Goals
+The test setup also captures screenshots when tests fail. Generated reports and screenshots should generally be excluded from Git using `.gitignore`, unless they are intentionally being published.
+
+## GitHub Actions — Continuous Integration
+
+The SauceDemo test suite is configured to run through GitHub Actions.
+
+The workflow supports:
+- Execution on pushes to `main`
+- Execution on pull requests to `main`
+- Manual workflow execution
+- HTML test report artifact upload
+- Failure screenshot artifact upload
+
+This helps validate automated tests in a CI environment.
+
+## Learning Objectives
 
 - Practice Selenium WebDriver automation.
 - Understand Pytest fixtures and test execution.
-- Automate login and web UI scenarios.
-- Practice failure screenshots and test reporting.
-- Organize automation projects using Git and GitHub.
+- Automate web UI scenarios.
+- Implement failure screenshot handling.
+- Generate HTML test reports.
+- Run automation tests using GitHub Actions.
+- Organize testing projects using Git and GitHub.
 
 ## Author
 
 **Suyash Bhargava**
 
-GitHub: [suyashbha01](https://github.com/suyashbha01)
+[GitHub Profile](https://github.com/suyashbha01)
+
+[Project Repository](https://github.com/suyashbha01/QA-Automation-Web-Testing)
 
 ---
 
-*This repository is a learning and practice portfolio for QA automation testing.*
+*This repository is a learning and practice portfolio for QA Automation Testing.*
