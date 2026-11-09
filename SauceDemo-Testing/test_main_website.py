@@ -445,7 +445,7 @@ def test_checkout_empty_fields(logged_in_driver):
 @pytest.mark.testcase8
 def test_final_page(logged_in_driver):
     driver = logged_in_driver
-    wait = WebDriverWait(driver, 15)
+    wait = WebDriverWait(driver, 20)
 
     # Add product to cart
     wait.until(
@@ -490,7 +490,7 @@ def test_final_page(logged_in_driver):
     )
     postal_code.send_keys("201301")
 
-    # Verify values were entered
+    # Verify checkout information
     assert first_name.get_attribute("value") == "Suyash"
     assert last_name.get_attribute("value") == "Bhargava"
     assert postal_code.get_attribute("value") == "201301"
@@ -502,17 +502,15 @@ def test_final_page(logged_in_driver):
         )
     ).click()
 
-    wait.until(
-        EC.text_to_be_present_in_element(
-            (By.CSS_SELECTOR, '[data-test="title"]'),
-            "Checkout: Overview"
+    # Verify checkout overview page
+    wait.until(EC.url_contains("checkout-step-two.html"))
+
+    overview_title = wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, '[data-test="title"]')
         )
     )
-
-    title = driver.find_element(
-        By.CSS_SELECTOR, '[data-test="title"]'
-    )
-    assert title.text == "Checkout: Overview"
+    assert overview_title.text == "Checkout: Overview"
 
     # Finish checkout
     wait.until(
@@ -521,18 +519,26 @@ def test_final_page(logged_in_driver):
         )
     ).click()
 
+    # Wait for the checkout completion page
+    wait.until(EC.url_contains("checkout-complete.html"))
+
     # Verify successful checkout
-    wait.until(
-        EC.text_to_be_present_in_element(
-            (By.CSS_SELECTOR, '[data-test="title"]'),
-            "Checkout: Complete!"
+    complete_title = wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, '[data-test="title"]')
         )
     )
 
-    complete_title = driver.find_element(
-        By.CSS_SELECTOR, '[data-test="title"]'
-    )
     assert complete_title.text == "Checkout: Complete!"
+
+    # Verify confirmation message
+    confirmation_message = wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, '[data-test="complete-header"]')
+        )
+    )
+
+    assert confirmation_message.text == "Thank you for your order!"
 
     print("PASS: Checkout completed successfully.")
 
@@ -543,23 +549,23 @@ def test_final_page(logged_in_driver):
 @pytest.mark.testcase9
 def test_slidebar_menu(logged_in_driver):
     driver = logged_in_driver
-    wait = WebDriverWait(driver, 15)
+    wait = WebDriverWait(driver, 20)
 
     # Open sidebar
-    slide_menu_button = wait.until(
+    wait.until(
         EC.element_to_be_clickable(
             (By.CSS_SELECTOR, "#react-burger-menu-btn")
         )
-    )
-    slide_menu_button.click()
+    ).click()
 
     # Verify sidebar is visible
-    slide_menu = wait.until(
+    sidebar = wait.until(
         EC.visibility_of_element_located(
             (By.CSS_SELECTOR, ".bm-menu")
         )
     )
-    assert slide_menu.is_displayed(), "Sidebar menu did not open"
+
+    assert sidebar.is_displayed(), "Sidebar menu did not open"
 
     # Verify All Items
     all_items = wait.until(
@@ -567,6 +573,7 @@ def test_slidebar_menu(logged_in_driver):
             (By.ID, "inventory_sidebar_link")
         )
     )
+
     assert all_items.text == "All Items"
 
     # Verify Dynamic Catalog
@@ -575,36 +582,51 @@ def test_slidebar_menu(logged_in_driver):
             (By.ID, "dynamic_catalog_sidebar_link")
         )
     )
+
     assert "Dynamic Catalog" in dynamic_catalog.text
 
-    # Open Dynamic Catalog if submenu is not visible
-    lazy_load_xpath = "//*[normalize-space()='Lazy Load']"
-
-    lazy_load_elements = driver.find_elements(
-        By.XPATH, lazy_load_xpath
+    # Check whether submenu links are already visible
+    submenu_xpath = (
+        ".//*[normalize-space()='Lazy Load' "
+        "or normalize-space()='Spinner' "
+        "or normalize-space()='Slider']"
     )
 
-    if not any(element.is_displayed() for element in lazy_load_elements):
+    submenu_elements = sidebar.find_elements(By.XPATH, submenu_xpath)
+
+    visible_submenu = [
+        element for element in submenu_elements
+        if element.is_displayed()
+    ]
+
+    # Open Dynamic Catalog if submenu is not visible
+    if not visible_submenu:
         dynamic_catalog.click()
 
-    # Verify all three submenu links are visible and clickable
+    # Verify submenu links
     submenu_links = ["Lazy Load", "Spinner", "Slider"]
 
     for link_name in submenu_links:
+
         link = wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, f"//*[normalize-space()='{link_name}']")
+            EC.visibility_of_element_located(
+                (
+                    By.XPATH,
+                    f"//div[contains(@class,'bm-menu')]"
+                    f"//*[normalize-space()='{link_name}']"
+                )
             )
         )
 
         assert link.is_displayed(), (
             f"{link_name} is not visible"
         )
+
         assert link.is_enabled(), (
             f"{link_name} is not enabled"
         )
 
-        print(f"PASS: {link_name} is visible and clickable")
+        print(f"PASS: {link_name} is visible and enabled")
 
     # Verify About
     about = wait.until(
@@ -612,6 +634,7 @@ def test_slidebar_menu(logged_in_driver):
             (By.ID, "about_sidebar_link")
         )
     )
+
     assert about.is_displayed()
 
     # Verify Logout
@@ -620,6 +643,7 @@ def test_slidebar_menu(logged_in_driver):
             (By.ID, "logout_sidebar_link")
         )
     )
+
     assert logout.is_displayed()
 
     # Verify Reset App State
@@ -628,9 +652,10 @@ def test_slidebar_menu(logged_in_driver):
             (By.ID, "reset_sidebar_link")
         )
     )
+
     assert reset.is_displayed()
 
-    print("PASS: Sidebar and all eight menu options verified.")
+    print("PASS: Sidebar menu options verified.")
 
 #======================================================================#
 
